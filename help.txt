@@ -1,0 +1,9 @@
+docker build -t sqli-attack docker/sqli/  
+docker build -t xss-attack docker/xss/   
+docker build -t ddos-attack docker/ddos/  
+docker build -t pathtrav-attack docker/pathtrav/
+
+docker run -d sqli-attack 
+docker run -d xss-attack 
+docker run -d ddos-attack    
+docker run -d pathtrav-attack   

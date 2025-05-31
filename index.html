@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мониторинг Энергообъектов НСО</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">   
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f7f9fc;
+      color: #333;
+    }
+
+    header {
+      background-color: #0a3d62;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #1e90ff;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .status-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .status-card {
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f0f4f8;
+    }
+
+    .attack-counter {
+      background: #e74c3c;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      transition: transform 0.3s ease;
+    }
+
+    footer {
+      background-color: #0a3d62;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 30px;
+    }
+
+    /* Индикатор активности защиты */
+    .protection-active {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+    
+    /* Цвета статусов */
+    .status-normal {
+      color: green;
+      font-weight: bold;
+    }
+    .status-warning {
+      color: orange;
+      font-weight: bold;
+    }
+    .status-critical {
+      color: red;
+      font-weight: bold;
+    }
+    .status-repair {
+      color: blue;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1><i class="fas fa-bolt"></i> Мониторинг энергообъектов Новосибирской области</h1>
+</header>
+
+<nav>
+  <a href="/"><i class="fas fa-home"></i>Главная</a>
+  <a href="/monitoring.html"><i class="fas fa-chart-line"></i>Мониторинг</a>
+  <a href="/security.html"><i class="fas fa-shield-alt"></i>Безопасность</a>
+  <a href="/login.html"><i class="fas fa-sign-out-alt"></i>Выйти из профиля</a>
+</nav>
+
+<div class="container">
+  <section>
+    <h2><i class="fas fa-tachometer-alt"></i> Основные показатели</h2>
+    <div class="status-panel">
+      <div class="status-card">
+        <h3>Активные объекты</h3>
+        <p id="active-objects">32/35</p>
+      </div>
+      <div class="status-card">
+        <h3>Текущая нагрузка</h3>
+        <p id="current-load">2450 МВт</p>
+      </div>
+      <div class="status-card protection-active">
+        <h3>Блокировано атак</h3>
+        <p class="attack-counter" id="blocked-attacks">0</p>
+      </div>
+      <div class="status-card">
+        <h3>Резервная мощность</h3>
+        <p id="reserve-power">320 МВт</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><i class="fas fa-th-list"></i> Ключевые объекты</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Объект</th>
+          <th>Тип</th>
+          <th>Статус</th>
+          <th>Мощность</th>
+          <th>Последние данные</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Гидроэлектростанции -->
+        <tr>
+          <td>Новосибирская ГЭС</td>
+          <td>ГЭС</td>
+          <td class="status-normal">Норма</td>
+          <td>460 МВт</td>
+          <td>15:30:45</td>
+        </tr>
+        
+        <!-- Тепловые электростанции -->
+        <tr>
+          <td>ТЭЦ-2</td>
+          <td>ТЭЦ</td>
+          <td class="status-normal">Норма</td>
+          <td>350 МВт</td>
+          <td>15:25:18</td>
+        </tr>
+        <tr>
+          <td>ТЭЦ-3</td>
+          <td>ТЭЦ</td>
+          <td class="status-repair">Плановый ремонт</td>
+          <td>120 МВт</td>
+          <td>14:50:22</td>
+        </tr>
+        <tr>
+          <td>ТЭЦ-4</td>
+          <td>ТЭЦ</td>
+          <td class="status-normal">Норма</td>
+          <td>280 МВт</td>
+          <td>15:28:05</td>
+        </tr>
+        <tr>
+          <td>ТЭЦ-5</td>
+          <td>ТЭЦ</td>
+          <td class="status-warning">Нагрузка +15%</td>
+          <td>400 МВт</td>
+          <td>15:28:12</td>
+        </tr>
+        
+        <!-- Подстанции -->
+        <tr>
+          <td>Подстанция №12 (Центральная)</td>
+          <td>Подстанция 500 кВ</td>
+          <td class="status-normal">Норма</td>
+          <td>-</td>
+          <td>15:29:33</td>
+        </tr>
+        <tr>
+          <td>Подстанция №17 (Восточная)</td>
+          <td>Подстанция 220 кВ</td>
+          <td class="status-critical">Авария</td>
+          <td>-</td>
+          <td>14:45:30</td>
+        </tr>
+        <tr>
+          <td>Подстанция №23 (Северная)</td>
+          <td>Подстанция 110 кВ</td>
+          <td class="status-normal">Норма</td>
+          <td>-</td>
+          <td>15:15:47</td>
+        </tr>
+        
+        <!-- Ветряные электростанции -->
+        <tr>
+          <td>ВЭС "Новосибирская"</td>
+          <td>Ветропарк</td>
+          <td class="status-normal">Норма</td>
+          <td>50 МВт</td>
+          <td>15:20:15</td>
+        </tr>
+        
+        <!-- Солнечные электростанции -->
+        <tr>
+          <td>СЭС "Ордынская"</td>
+          <td>Солнечная станция</td>
+          <td class="status-warning">Пониженная выработка</td>
+          <td>25 МВт</td>
+          <td>15:18:42</td>
+        </tr>
+        
+        <!-- Крупные промышленные объекты -->
+        <tr>
+          <td>Завод "Новосибирскэнерго"</td>
+          <td>Промышленный объект</td>
+          <td class="status-normal">Норма</td>
+          <td>80 МВт</td>
+          <td>15:22:10</td>
+        </tr>
+        <tr>
+          <td>Аэропорт Толмачево</td>
+          <td>Транспортный узел</td>
+          <td class="status-normal">Норма</td>
+          <td>45 МВт</td>
+          <td>15:25:55</td>
+        </tr>
+        
+        <!-- Распределительные сети -->
+        <tr>
+          <td>РП-8 (Левобережье)</td>
+          <td>Распределительный пункт</td>
+          <td class="status-warning">Частичное отключение</td>
+          <td>-</td>
+          <td>14:58:37</td>
+        </tr>
+        <tr>
+          <td>РП-15 (Правобережье)</td>
+          <td>Распределительный пункт</td>
+          <td class="status-normal">Норма</td>
+          <td>-</td>
+          <td>15:30:02</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<footer>
+  <p>Центр мониторинга энергосистем © 2023</p>
+  <p>Новосибирск, ул. Энергетиков, 15</p>
+</footer>
+
+<script>
+  // Функция обновления счетчика атак
+  async function updateAttackCounter() {
+    try {
+      const response = await fetch('/api/logs');
+      if (!response.ok) throw new Error('Ошибка сети');
+      
+      const logs = await response.json();
+      
+      // Считаем общее количество атак (всех типов)
+      const totalAttacks = logs.length;
+      
+      const counterElement = document.getElementById('blocked-attacks');
+      counterElement.textContent = totalAttacks;
+      
+      // Анимация при изменении значения
+      if (parseInt(counterElement.textContent) > 0) {
+        counterElement.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          counterElement.style.transform = 'scale(1)';
+        }, 300);
+      }
+      
+    } catch (error) {
+      console.error('Ошибка получения логов:', error);
+      document.getElementById('blocked-attacks').textContent = '⚠';
+    }
+  }
+
+  // Обновление данных каждые 2 секунды
+  setInterval(() => {
+    updateAttackCounter();
+    // Обновление других показателей
+    document.getElementById('current-load').textContent = 
+      `${Math.floor(2400 + Math.random() * 100)} МВт`;
+    document.getElementById('active-objects').textContent = 
+      `${18 + Math.floor(Math.random() * 2)}/22`;
+  }, 2000);
+
+  // Первоначальная загрузка
+  updateAttackCounter();
+</script>
+
+</body>
+</html>
