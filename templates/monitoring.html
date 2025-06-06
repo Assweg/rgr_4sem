@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Энергоцентр | Мониторинг узлов</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Общие стили */
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Шапка */
+    .header-content {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, #0a3d62 0%, #1e5799 100%);
+      color: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header-content h1 {
+      margin: 0;
+      font-size: 2.2em;
+      font-weight: 600;
+    }
+
+    .header-content p {
+      margin: 10px 0 0 0;
+      color: #cce0f2;
+      font-size: 1.1em;
+    }
+
+    /* Навигация */
+    nav {
+      background-color: #1e90ff;
+      padding: 15px 0;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 25px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.1em;
+      transition: all 0.3s ease;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+
+    nav a:hover {
+      background-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Основной контент */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    /* Таблица */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #495057;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    /* Статусы */
+    .status-badge {
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      display: inline-block;
+      font-weight: 500;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .error { background-color: #fff5f5; }
+    .error .status-badge { background: #ff6b6b; color: white; }
+    .warning { background-color: #fff9e6; }
+    .warning .status-badge { background: #ffd43b; color: #2b2b2b; }
+    .ok { background-color: #f0fff4; }
+    .ok .status-badge { background: #51cf66; color: white; }
+    .repair { background-color: #f0f8ff; }
+    .repair .status-badge { background: #4dabf7; color: white; }
+    .offline { background-color: #f8f9fa; }
+    .offline .status-badge { background: #adb5bd; color: white; }
+
+    /* Иконки в заголовках */
+    th i {
+      margin-right: 8px;
+      color: #6c757d;
+    }
+
+    /* Дополнительные стили */
+    .last-update {
+      text-align: right;
+      margin-top: 15px;
+      color: #6c757d;
+      font-size: 0.9em;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      nav {
+        flex-wrap: wrap;
+        padding: 10px 0;
+      }
+      nav a {
+        margin: 5px 10px;
+        font-size: 1em;
+      }
+      th, td {
+        padding: 12px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1><i class="fas fa-chart-network"></i> Мониторинг энергетических узлов</h1>
+      <p>Состояние энергетической сети в реальном времени</p>
+    </div>
+    <nav>
+      <a href="/"><i class="fas fa-home"></i>Главная</a>
+      <a href="/monitoring"><i class="fas fa-chart-line"></i>Мониторинг</a>
+      <a href="/security"><i class="fas fa-shield-alt"></i>Безопасность</a>
+      <a href="/logout"><i class="fas fa-sign-out-alt"></i>Выйти</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th><i class="fas fa-hashtag"></i> ID</th>
+            <th><i class="fas fa-map-marker-alt"></i> Расположение</th>
+            <th><i class="fas fa-bolt"></i> Напряжение</th>
+            <th><i class="fas fa-bolt"></i> Ток</th>
+            <th><i class="fas fa-tachometer-alt"></i> Нагрузка</th>
+            <th><i class="fas fa-temperature-high"></i> Температура</th>
+            <th><i class="fas fa-info-circle"></i> Статус</th>
+          </tr>
+        </thead>
+        <tbody id="node-data">
+          <!-- Генераторные узлы -->
+          <tr class="ok">
+            <td>GEN-01</td>
+            <td>Новосибирская ГЭС</td>
+            <td>6300 В</td>
+            <td>1200 А</td>
+            <td>72.5%</td>
+            <td>42°C</td>
+            <td><span class="status-badge">Норма</span></td>
+          </tr>
+          <tr class="warning">
+            <td>GEN-02</td>
+            <td>ТЭЦ-5 (Котлотурбинный цех)</td>
+            <td>6100 В</td>
+            <td>1850 А</td>
+            <td>89.3%</td>
+            <td>67°C</td>
+            <td><span class="status-badge">Высокая нагрузка</span></td>
+          </tr>
+          
+          <!-- Трансформаторные подстанции -->
+          <tr class="ok">
+            <td>TRF-101</td>
+            <td>Подстанция №12 (Центральная)</td>
+            <td>110000 В</td>
+            <td>450 А</td>
+            <td>65.2%</td>
+            <td>55°C</td>
+            <td><span class="status-badge">Норма</span></td>
+          </tr>
+          <tr class="error">
+            <td>TRF-102</td>
+            <td>Подстанция №17 (Восточная)</td>
+            <td>0 В</td>
+            <td>0 А</td>
+            <td>0%</td>
+            <td>28°C</td>
+            <td><span class="status-badge">Авария</span></td>
+          </tr>
+          <tr class="repair">
+            <td>TRF-103</td>
+            <td>Подстанция №23 (Северная)</td>
+            <td>22000 В</td>
+            <td>120 А</td>
+            <td>30.5%</td>
+            <td>48°C</td>
+            <td><span class="status-badge">Ремонт</span></td>
+          </tr>
+          
+          <!-- Распределительные узлы -->
+          <tr class="ok">
+            <td>DIST-201</td>
+            <td>РП-8 (Левобережье)</td>
+            <td>10000 В</td>
+            <td>320 А</td>
+            <td>58.7%</td>
+            <td>39°C</td>
+            <td><span class="status-badge">Норма</span></td>
+          </tr>
+          <tr class="warning">
+            <td>DIST-202</td>
+            <td>РП-15 (Правобережье)</td>
+            <td>9800 В</td>
+            <td>410 А</td>
+            <td>82.1%</td>
+            <td>52°C</td>
+            <td><span class="status-badge">Перегрузка</span></td>
+          </tr>
+          
+          <!-- Промышленные объекты -->
+          <tr class="ok">
+            <td>IND-301</td>
+            <td>Завод "Сибсельмаш"</td>
+            <td>6000 В</td>
+            <td>850 А</td>
+            <td>75.3%</td>
+            <td>61°C</td>
+            <td><span class="status-badge">Норма</span></td>
+          </tr>
+          <tr class="offline">
+            <td>IND-302</td>
+            <td>Аэропорт Толмачево (Южный терминал)</td>
+            <td>0 В</td>
+            <td>0 А</td>
+            <td>0%</td>
+            <td>22°C</td>
+            <td><span class="status-badge">Отключен</span></td>
+          </tr>
+          
+          <!-- Альтернативная энергетика -->
+          <tr class="ok">
+            <td>ALT-401</td>
+            <td>СЭС "Ордынская" (Сектор 1-4)</td>
+            <td>33000 В</td>
+            <td>95 А</td>
+            <td>45.8%</td>
+            <td>38°C</td>
+            <td><span class="status-badge">Норма</span></td>
+          </tr>
+          <tr class="warning">
+            <td>ALT-402</td>
+            <td>ВЭС "Новосибирская" (Турбина 5)</td>
+            <td>31500 В</td>
+            <td>78 А</td>
+            <td>68.9%</td>
+            <td>43°C</td>
+            <td><span class="status-badge">Снижена эффективность</span></td>
+          </tr>
+          
+          <!-- Критические объекты -->
+          <tr class="ok">
+            <td>CRIT-501</td>
+            <td>Городская больница №1</td>
+            <td>380 В</td>
+            <td>210 А</td>
+            <td>60.2%</td>
+            <td>35°C</td>
+            <td><span class="status-badge">Норма</span></td>
+          </tr>
+          <tr class="ok">
+            <td>CRIT-502</td>
+            <td>ЦОД "Сибирь" (Сектор B)</td>
+            <td>400 В</td>
+            <td>185 А</td>
+            <td>55.7%</td>
+            <td>41°C</td>
+            <td><span class="status-badge">Норма</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="last-update">
+        Последнее обновление: <span id="update-time">15:45:22</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Функция для обновления данных в реальном времени
+    function updateNodeData() {
+      const nodes = document.querySelectorAll('#node-data tr');
+      const updateTime = document.getElementById('update-time');
+      
+      // Обновляем время
+      const now = new Date();
+      updateTime.textContent = now.toLocaleTimeString();
+      
+      // Обновляем данные для каждого узла
+      nodes.forEach(node => {
+        if (Math.random() > 0.7) return; // 30% chance to update
+        
+        const cells = node.cells;
+        const isOffline = node.classList.contains('offline') || node.classList.contains('error');
+        
+        if (!isOffline) {
+          // Обновляем напряжение (±5%)
+          if (cells[2]) {
+            const voltage = parseFloat(cells[2].textContent);
+            if (!isNaN(voltage)) {
+              const newVoltage = voltage * (0.95 + Math.random() * 0.1);
+              cells[2].textContent = newVoltage.toFixed(voltage < 100 ? 1 : 0) + ' В';
+            }
+          }
+          
+          // Обновляем ток (±10%)
+          if (cells[3]) {
+            const current = parseFloat(cells[3].textContent);
+            if (!isNaN(current)) {
+              const newCurrent = current * (0.9 + Math.random() * 0.2);
+              cells[3].textContent = newCurrent.toFixed(1) + ' А';
+            }
+          }
+          
+          // Обновляем нагрузку (±8%)
+          if (cells[4]) {
+            const load = parseFloat(cells[4].textContent);
+            if (!isNaN(load)) {
+              const newLoad = load * (0.92 + Math.random() * 0.16);
+              cells[4].textContent = Math.min(100, newLoad).toFixed(1) + '%';
+            }
+          }
+          
+          // Обновляем температуру (±3°C)
+          if (cells[5]) {
+            const temp = parseFloat(cells[5].textContent);
+            if (!isNaN(temp)) {
+              const newTemp = temp + (Math.random() * 6 - 3);
+              cells[5].textContent = Math.max(20, newTemp).toFixed(0) + '°C';
+            }
+          }
+        }
+        
+        // Случайное изменение статуса (5% chance)
+        if (Math.random() < 0.05 && !node.classList.contains('error') && !node.classList.contains('repair')) {
+          const statusClasses = ['ok', 'warning', 'error', 'repair', 'offline'];
+          const currentClass = Array.from(node.classList).find(cls => statusClasses.includes(cls));
+          const newClass = statusClasses[Math.floor(Math.random() * statusClasses.length)];
+          
+          if (currentClass !== newClass) {
+            node.classList.remove(currentClass);
+            node.classList.add(newClass);
+            
+            const statusBadge = node.querySelector('.status-badge');
+            if (statusBadge) {
+              if (newClass === 'ok') statusBadge.textContent = 'Норма';
+              else if (newClass === 'warning') statusBadge.textContent = ['Перегрузка', 'Снижена эффективность', 'Повышенная температура'][Math.floor(Math.random() * 3)];
+              else if (newClass === 'error') statusBadge.textContent = 'Авария';
+              else if (newClass === 'repair') statusBadge.textContent = 'Ремонт';
+              else if (newClass === 'offline') statusBadge.textContent = 'Отключен';
+            }
+          }
+        }
+      });
+    }
+    
+    // Обновляем данные каждые 3 секунды
+    setInterval(updateNodeData, 3000);
+    
+    // Первоначальное обновление
+    updateNodeData();
+  </script>
+</body>
+</html>

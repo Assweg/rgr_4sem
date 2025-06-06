@@ -1,4 +1,11 @@
-FROM python:alpine
-COPY attack.py .
-RUN pip install requests
-CMD ["python", "attack.py"]
+FROM python:3.9-slim
+
+WORKDIR /attack
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+COPY ../common/event_sender.py /attack/event_sender.py
+
+CMD ["python", "ddos_attack.py"]

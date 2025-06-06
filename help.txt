@@ -7,3 +7,5 @@ docker run -d sqli-attack
 docker run -d xss-attack 
 docker run -d ddos-attack    
 docker run -d pathtrav-attack   
+
+docker-compose down -v && docker-compose -f docker-compose.attack.yml down -v && docker-compose up -d && sleep 10 && docker-compose -f docker-compose.attack.yml up -d
