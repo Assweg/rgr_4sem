@@ -1,10 +1,10 @@
 FROM python:3.9-slim
 
 WORKDIR /attack
-COPY requirements.txt .
+COPY sqli/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-COPY ../common/event_sender.py /attack/event_sender.py
+COPY sqli/. .
+COPY common/event_sender.py /attack/event_sender.py
 
 CMD ["python", "sqli_attack.py"]

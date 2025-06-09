@@ -1,11 +1,6 @@
-docker build -t sqli-attack docker/sqli/  
-docker build -t xss-attack docker/xss/   
-docker build -t ddos-attack docker/ddos/  
-docker build -t pathtrav-attack docker/pathtrav/
+ 
+docker compose up -d
 
-docker run -d sqli-attack 
-docker run -d xss-attack 
-docker run -d ddos-attack    
-docker run -d pathtrav-attack   
+docker compose -f docker-compose.attack.yml up -d
 
-docker-compose down -v && docker-compose -f docker-compose.attack.yml down -v && docker-compose up -d && sleep 10 && docker-compose -f docker-compose.attack.yml up -d
+docker exec -it rgr-db-1 psql -U user -d security_db
