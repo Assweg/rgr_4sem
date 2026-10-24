@@ -42,8 +42,18 @@ docker compose up --build -d
 
 ## Материалы
 
-[Отчёт и локальные варианты РГР](https://github.com/Assweg/nstu/tree/main/5sem/%D0%A2%D0%B8%D0%9C%D0%9F).
+[Отчёт и локальные варианты РГР](https://github.com/Assweg/nstu).
 
 ---
 
-[Все учебные работы](https://github.com/Assweg/nstu) · [Профиль Assweg](https://github.com/Assweg)
+[Каталог учебных репозиториев](https://github.com/Assweg/nstu) · [Профиль Assweg](https://github.com/Assweg)
+
+## Материалы из локальной папки
+
+Исходники и документы этой работы собраны в этом репозитории.
+
+[docker](docker/) · [reports](reports/) · [templates](templates/) · [variants](variants/)
+
+### Отчёты и документы
+
+- [Отчет БутаковНМ РГР.docx](reports/%D0%9E%D1%82%D1%87%D0%B5%D1%82%20%D0%91%D1%83%D1%82%D0%B0%D0%BA%D0%BE%D0%B2%D0%9D%D0%9C%20%D0%A0%D0%93%D0%A0.docx)
