@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Энергоцентр | Безопасность</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .security-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        .stat-card p {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .filters {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            background: #3498db;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-danger {
+            background: #e74c3c;
+        }
+        .log-container {
+            max-width: 1200px;
+            margin: 1rem auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .log-box {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ecf0f1;
+            border-radius: 4px;
+            padding: 1rem;
+            background: #f8f9fa;
+        }
+        .log-entry {
+            border-left: 4px solid;
+            margin: 0.3rem 0;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .log-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .log-time {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .log-ip {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .log-type {
+            text-transform: uppercase;
+            font-size: 0.8em;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+        }
+        .log-details {
+            margin-top: 0.5rem;
+        }
+        .log-details pre {
+            background: #f8f9fa;
+            color: #2c3e50;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        /* Цвета для типов атак */
+        .log-entry.SQLi { border-color: #e74c3c; }
+        .log-entry.SQLi .log-type { background: #e74c3c; }
+        .log-entry.XSS { border-color: #f39c12; }
+        .log-entry.XSS .log-type { background: #f39c12; }
+        .log-entry.DDoS { border-color: #9b59b6; }
+        .log-entry.DDoS .log-type { background: #9b59b6; }
+        .log-entry.Path { border-color: #1abc9c; }
+        .log-entry.Path .log-type { background: #1abc9c; }
+        .log-entry.Blocked { border-color: #34495e; }
+        .log-entry.Blocked .log-type { background: #34495e; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-shield-alt"></i> Безопасность</h1>
+            <p>Мониторинг и защита от кибератак</p>
+            <nav>
+                <a href="/"><i class="fas fa-home"></i> Главная</a>
+                <a href="/monitoring.html"><i class="fas fa-chart-line"></i> Мониторинг</a>
+                <a href="/security.html"><i class="fas fa-shield-alt"></i> Безопасность</a>
+            </nav>
+        </div>
+    </header>
+
+    <section>
+        <div class="security-stats">
+            <div class="stat-card">
+                <h3>Всего атак</h3>
+                <p id="total-attacks">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>SQL-инъекции</h3>
+                <p id="sql-attacks">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>XSS</h3>
+                <p id="xss-attacks">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>DDoS</h3>
+                <p id="ddos-attacks">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Path Traversal</h3>
+                <p id="path-attacks">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Заблокировано атак</h3>
+                <p id="blocked-ips">0</p>
+            </div>
+        </div>
+
+        <div class="filters">
+            <h2><i class="fas fa-filter"></i> Фильтры логов</h2>
+            <div class="filter-options">
+                <label>
+                    <input type="checkbox" id="filter-sql" checked> SQL-инъекции
+                </label>
+                <label>
+                    <input type="checkbox" id="filter-xss" checked> XSS
+                </label>
+                <label>
+                    <input type="checkbox" id="filter-ddos" checked> DDoS
+                </label>
+                <label>
+                    <input type="checkbox" id="filter-path" checked> Path Traversal
+                </label>
+                <button class="btn" id="refresh-logs"><i class="fas fa-sync-alt"></i> Обновить</button>
+                <button class="btn btn-danger" id="clear-logs"><i class="fas fa-trash-alt"></i> Очистить логи</button>
+            </div>
+        </div>
+
+        <div class="log-container">
+            <h2><i class="fas fa-clipboard-list"></i> Журнал событий безопасности</h2>
+            <div id="log" class="log-box"></div>
+        </div>
+    </section>
+
+    <script>
+        // Функция для форматирования записи лога
+        function formatLogEntry(entry) {
+            const type = entry.type || 'Unknown';
+            const prettyJson = JSON.stringify(entry, null, 2)
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\n/g, '<br>')
+                .replace(/ /g, '&nbsp;');
+
+            return `
+                <div class="log-entry ${type}">
+                    <div class="log-header">
+                        <span class="log-time"><i class="fas fa-clock"></i> ${entry.timestamp}</span>
+                        <span class="log-ip"><i class="fas fa-network-wired"></i> ${entry.ip}</span>
+                        <span class="log-type">${type}</span>
+                    </div>
+                    <div class="log-details">
+                        <pre>${prettyJson}</pre>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Загрузка и отображение логов
+        async function fetchLogs() {
+            try {
+                const [logsResponse, blockedResponse] = await Promise.all([
+                    fetch('/api/logs'),
+                    fetch('/api/blocked')
+                ]);
+                
+                const logs = await logsResponse.json();
+                const blocked = await blockedResponse.json();
+                
+                // Обновляем статистику
+                const counts = logs.reduce((acc, log) => {
+                    acc.total++;
+                    acc[log.type] = (acc[log.type] || 0) + 1;
+                    return acc;
+                }, { total: 0 });
+
+                document.getElementById('total-attacks').textContent = counts.total;
+                document.getElementById('sql-attacks').textContent = counts.SQLi || 0;
+                document.getElementById('xss-attacks').textContent = counts.XSS || 0;
+                document.getElementById('ddos-attacks').textContent = counts.DDoS || 0;
+                document.getElementById('path-attacks').textContent = counts.Path || 0;
+                document.getElementById('blocked-ips').textContent = counts.total;
+
+                // Применяем фильтры
+                const filters = {
+                    SQLi: document.getElementById('filter-sql').checked,
+                    XSS: document.getElementById('filter-xss').checked,
+                    DDoS: document.getElementById('filter-ddos').checked,
+                    Path: document.getElementById('filter-path').checked
+                };
+
+                const filteredLogs = logs.filter(log => 
+                    filters[log.type] !== undefined ? filters[log.type] : true
+                );
+
+                // Отображаем логи
+                const logContainer = document.getElementById('log');
+                logContainer.innerHTML = filteredLogs
+                    .reverse()
+                    .map(log => formatLogEntry(log))
+                    .join('');
+            } catch (error) {
+                console.error('Ошибка при загрузке данных:', error);
+            }
+        }
+
+        // Очистка логов
+        document.getElementById('clear-logs').addEventListener('click', async () => {
+            try {
+                await fetch('/api/unblock');
+                fetchLogs();
+                alert('Логи очищены!');
+            } catch (error) {
+                console.error('Ошибка при очистке логов:', error);
+            }
+        });
+
+        // Автообновление каждые 3 секунды
+        setInterval(fetchLogs, 3000);
+        fetchLogs();
+
+        // Обработчики событий
+        document.getElementById('refresh-logs').addEventListener('click', fetchLogs);
+        document.querySelectorAll('.filters input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', fetchLogs);
+        });
+    </script>
+</body>
+</html>
